@@ -3,6 +3,9 @@ package es.grise.upm.profundizacion.mocking.exercise2;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
+import java.sql.Timestamp;
+import java.util.Date;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -21,6 +24,17 @@ public class EngineControllerTest {
         this.gearbox = mock(Gearbox.class);
         this.time = mock(Time.class);
         this.engineController = new EngineController(logger, speedometer, gearbox, time);
+    }
+
+    @Test
+    public void recordGearTest() {
+        GearValues mockGear = GearValues.FIRST;
+        
+        when(time.getCurrentTime()).thenReturn(new Timestamp(0));
+
+        engineController.recordGear(mockGear);
+
+        verify(logger).log("1970-01-01 01:00:00 Gear changed to" + mockGear);
     }
 
     @Test
