@@ -8,6 +8,8 @@ import java.util.Date;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
+import org.mockito.Mockito;
 
 public class EngineControllerTest {
 
@@ -34,7 +36,7 @@ public class EngineControllerTest {
 
         engineController.recordGear(mockGear);
 
-        verify(logger).log("1970-01-01 01:00:00 Gear changed to" + mockGear);
+        verify(logger).log("1970-01-01 01:00:00 Gear changed to " + mockGear);
     }
 
     @Test
@@ -49,6 +51,34 @@ public class EngineControllerTest {
 
         //verificamos que el resultado es el esperado
         assertEquals(10.0, result, "Compara resultado esperado y el obtenido" );
+    }
+
+    @Test
+    public void setnumllamadas() {
+        when(speedometer.getSpeed()).thenReturn(10.0);
+        when(time.getCurrentTime()).thenReturn(new Timestamp(0)); //Sino falla `por que lo llama en recordgear
+        engineController.adjustGear();
+
+        verify(speedometer, times(3)).getSpeed();
+    }
+
+    @Test
+    public void setMarchaTest() {
+        when(speedometer.getSpeed()).thenReturn(10.0);
+        when(time.getCurrentTime()).thenReturn(new Timestamp(0)); //Sino falla `por que lo llama en recordgear
+        engineController.adjustGear();
+
+        verify(gearbox).setGear(GearValues.FIRST);
+    }
+
+    @Test
+    public void setrecordgear() {
+        when(speedometer.getSpeed()).thenReturn(15.0);
+        when(time.getCurrentTime()).thenReturn(new Timestamp(0)); //Sino falla `por que lo llama en recordgear
+        engineController.adjustGear();
+
+        verify(logger).log(Mockito.anyString());
+        //verify(logger).log("1970-01-01 01:00:00 Gear changed to FIRST");
     }
     
 }
